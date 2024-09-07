@@ -1,30 +1,38 @@
 import { createContext, useState, useEffect } from 'react';
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
+import { AuthService, ROLES } from './firebase/authService.js';
 
 export const UserContext = createContext();
 
 export function UserProvider({ children }) {
-  const [tipoUsuario, setTipoUsuario] = useState('');
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedTipoUsuario = localStorage.getItem('tipoUsuario');
-    if (storedTipoUsuario) {
-      setTipoUsuario(storedTipoUsuario);
+    const currentUser = AuthService.getCurrentUser();
+    if (currentUser) {
+      setUser(currentUser);
     }
   }, []);
 
-  const updateTipoUsuario = (newTipo) => {
-    setTipoUsuario(newTipo);
-    localStorage.setItem('tipoUsuario', newTipo);
+  const login = async (tipoUsuario) => {
+    await AuthService.login(tipoUsuario);
+    setUser(AuthService.getCurrentUser());
   };
 
-  const logout = () => {
-    setTipoUsuario('');
-    localStorage.removeItem('tipoUsuario');
+  const logout = async () => {
+    await AuthService.logout();
+    setUser(null);
+  };
+
+  const updateUser = (newUserData) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      ...newUserData,
+    }));
   };
 
   return (
-    <UserContext.Provider value={{ tipoUsuario, updateTipoUsuario, logout }}>
+    <UserContext.Provider value={{ user, login, logout, updateUser, ROLES }}>
       {children}
     </UserContext.Provider>
   );
