@@ -1,5 +1,4 @@
-// UserContext.jsx
-import  { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types'; 
 
 export const UserContext = createContext();
@@ -19,8 +18,13 @@ export function UserProvider({ children }) {
     localStorage.setItem('tipoUsuario', newTipo);
   };
 
+  const logout = () => {
+    setTipoUsuario('');
+    localStorage.removeItem('tipoUsuario');
+  };
+
   return (
-    <UserContext.Provider value={{ tipoUsuario, updateTipoUsuario }}>
+    <UserContext.Provider value={{ tipoUsuario, updateTipoUsuario, logout }}>
       {children}
     </UserContext.Provider>
   );

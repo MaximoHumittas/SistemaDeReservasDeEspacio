@@ -1,7 +1,6 @@
-// Intermediario.jsx
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from './userContext';
+import { UserContext } from '/src/userContext';
 
 function Intermediario() {
   const { updateTipoUsuario } = useContext(UserContext);
@@ -12,11 +11,16 @@ function Intermediario() {
     navigate('/login');
   };
 
+  const userTypes = ['estudiante', 'docente', 'administrativo'];
+
   return (
     <div>
       <h1>¿Cómo deseas ingresar?</h1>
-      <button onClick={() => handleSelection('estudiante')}>Ingresar como Estudiante</button>
-      <button onClick={() => handleSelection('docente')}>Ingresar como Docente</button>
+      {userTypes.map(tipo => (
+        <button key={tipo} onClick={() => handleSelection(tipo)}>
+          Ingresar como {tipo}
+        </button>
+      ))}
     </div>
   );
 }
