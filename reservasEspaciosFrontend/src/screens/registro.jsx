@@ -3,9 +3,10 @@ import { useState, useContext } from 'react';
 import { UserContext } from '../userContext';
 
 function Registro() {
-    const { tipoUsuario } = useParams(); // Obtener el tipo de usuario de la URL
+    const { tipoUsuario } = useParams();
     const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
     const { login } = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -16,20 +17,17 @@ function Registro() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // Validación básica
         if (formData.password !== formData.confirmPassword) {
             alert('Las contraseñas no coinciden');
             return;
         }
 
-        // Log para verificar datos en el frontend
         console.log('Datos enviados al backend:', {
             email: formData.email,
             password: formData.password,
-            tipoUsuario: tipoUsuario
+            tipoUsuario: user.tipoUsuario
         });
 
-        // Enviar datos al backend
         try {
             const response = await fetch('http://localhost:3000/registro', {
                 method: 'POST',
@@ -46,8 +44,7 @@ function Registro() {
             const result = await response.json();
             console.log('Respuesta del backend:', result);
 
-            // TEMPORAL: Usar login del contexto para simular registro
-            await login(tipoUsuario);
+            await login(user.tipoUsuario);
             navigate('/home');
         } catch (error) {
             console.error('Error en el registro:', error);
@@ -56,7 +53,7 @@ function Registro() {
 
     return (
         <div className="registro-container">
-            <h1>Registro de {tipoUsuario}</h1>
+            <h1>Registro de {user.tipoUsuario}</h1>
             <form onSubmit={handleSubmit} className="registro-form">
                 <div className="form-group">
                     <label htmlFor="email">Email:</label>

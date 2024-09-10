@@ -13,6 +13,13 @@ function Login() {
       alert('Por favor selecciona un tipo de usuario.');
     }
   };
+  const handleRegister = () => {
+    if (user) {
+      navigate('/registro');
+    } else {
+      alert('Por favor selecciona un tipo de usuario.');
+    }
+  };
 
   return (
     <div>
@@ -21,7 +28,7 @@ function Login() {
         <div>
           <p>Iniciar sesión como {user.tipoUsuario}</p>
           <button onClick={handleLogin}>Iniciar sesión</button>
-          <p>No tienes cuenta? <button onClick={() => navigate('/registro')}>Regístrate</button></p>
+          <p>No tienes cuenta? <button onClick={handleRegister}>Regístrate</button></p>
         </div>
       ) : (
         <p>Selecciona un tipo de usuario primero.</p>
