@@ -1,9 +1,8 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { useState, useContext } from 'react';
 import { UserContext } from '../userContext';
 
 function Registro() {
-    const { tipoUsuario } = useParams();
     const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
     const { login } = useContext(UserContext);
     const {user} = useContext(UserContext);
@@ -37,7 +36,7 @@ function Registro() {
                 body: JSON.stringify({
                     email: formData.email,
                     password: formData.password,
-                    tipoUsuario: tipoUsuario
+                    tipoUsuario: user.tipoUsuario
                 }),
             });
 
