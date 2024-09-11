@@ -1,54 +1,132 @@
 
+import { useState } from "react"
 import { Link } from "react-router-dom"
 
 function Navbar() {
 
-    const navStyle = {
+    const [menuOpen, setMenuOpen] = useState(false)
 
-        padding: "10px",
-        borderBottom: "2px solid #ccc"
-    };
+    {/*
+    visit
+    student
+    teacher
+    admin
+    manager
 
-    const ulStyle = {
-        listStyle: "none",
-        display: "flex",
-        gap: "20px",
-        padding: "0",
-        margin: "0"
-    };
 
-    const linkStyle = {
-        color: "#fff",
-        textDecoration: "none",
-        fontSize: "18px"
-    };
+     */}
+
+    const [userType, setTypeUser] = useState("visit")
+
+    const ChangeTypeUser = (event) => {
+        setTypeUser(event.target.value)
+    }
 
     return (
         //la aparencia por ahora es opcional
-        <nav style={navStyle}>
-            <h1 style={{ margin: "0", fontSize: "24px" }}>Menu</h1>
-            <ul style={ulStyle}>
-                <li>
-                    <Link to="/" style={linkStyle}>Home</Link>
-                </li>
-                <li>
-                    <Link to="/user" style={linkStyle}>Usuario</Link>
-                </li>
-                <li>
-                    <Link to="/calendar" style={linkStyle} >Calendar</Link>
-                </li>
-                <li>
-                    <Link to="/login" style={linkStyle}>Login</Link>
-                </li>
-                <li>
-                    <Link to="/register" style={linkStyle}>Register</Link>
-                </li>
-                <li>
-                    <Link to="/applications" style={linkStyle}>Tabla de Solicitudes</Link>
-                </li>
-            </ul>
 
-        </nav>
+        <div>
+            <p>estado del menu {menuOpen ? "Abierto" : "Cerrado"}</p>
+            <button onClick={() => setMenuOpen(!menuOpen)}>click para cambiar</button>
+            <p>Usuario {userType}</p>
+            <form>
+                <label>
+                    <select value={userType} onChange={ChangeTypeUser}>
+                        <option value="visit">Visita </option>
+                        <option value="student">Usuario</option>
+                        <option value="teacher">profesor</option>
+                        <option value="manager">gestionador</option>
+                        <option value="admin">admistrador</option>
+                    </select>
+                </label>
+            </form>
+
+
+            {menuOpen ? (
+
+                <nav>
+
+
+
+                    {userType === "student" && (
+
+                        <>
+                            <li>
+                                <Link to="/user" >Usuario</Link>
+                            </li>
+                            <li>
+                                <Link to="/calendar"  >Calendario</Link>
+                            </li>
+                        </>
+                    )}
+                    {userType === "manager" && (
+
+                        <>
+                            <li>
+                                <Link to="/user" >Usuario de gestion</Link>
+                            </li>
+                            <li>
+                                <Link to="/calendar"  >Calendario</Link>
+                            </li>
+                        
+                            <li>
+                                <Link to="/applications" >Tabla de Solicitudes</Link>
+                            </li>
+                        
+                        </>
+
+                    )}
+                    {
+                        userType === "teacher" && (
+                            <>
+                                <li>
+                                    <Link to="/user" >Usuario Profesor</Link>
+                                
+                                </li>
+                                <li>
+                                    <Link to="/calendar"  >Calendario</Link>
+                                </li>
+
+                            </>
+                            
+
+                        )
+                    }
+                    {
+                        userType === "admin" && (
+                            <>
+                                <li>
+                                    <Link to="/user" >Usuario Profesor</Link>
+                            
+                                </li>
+                                <li>
+                                    <Link to="/calendar"  >Calendario</Link>
+                                </li>
+
+                        </>
+
+                        )
+                    }
+
+                </nav>
+
+            ) : 
+             (
+                <nav>
+                    <li>
+                        <Link to="/login" >Login</Link>
+                    </li>
+                    <li>
+                        <Link to="/register" >Register</Link>
+                    </li>
+
+                </nav>
+
+             )}
+
+
+        </div>
+
 
 
 

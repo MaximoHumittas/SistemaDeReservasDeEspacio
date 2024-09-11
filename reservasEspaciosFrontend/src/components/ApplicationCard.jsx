@@ -5,8 +5,6 @@ function ApplicationCard({name,career,typeAplication,index}) {
 
     //se les mandaria a la api
 
-
-    
     
     const ApprovedAplication = () => {
 
@@ -31,8 +29,8 @@ function ApplicationCard({name,career,typeAplication,index}) {
             <p>Tipo de Solicitud: {typeAplication}</p>
 
 
-            <button onClick={ApprovedAplication} style={{backgroundColor:"red", }}>Solicitud Aprobada </button>
-            <button onClick={DeniedAplication } style={{backgroundColor:"green"}}>Solicitud Degenada </button>
+            <button onClick={ApprovedAplication} style={{backgroundColor:"green", }}>Solicitud Aprobada </button>
+            <button onClick={DeniedAplication } style={{backgroundColor:"red"}}>Solicitud Degenada </button>
         </div>
     );
 }

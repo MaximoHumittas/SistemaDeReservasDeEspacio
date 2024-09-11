@@ -7,7 +7,8 @@ function ApplicationPage() {
     //aqui se pediria a la api, los datos de la solicitudes
     const [userAplications,setUserAplications] = useState([
         {nombre: "Diego Alvarez", carrera: "Informatica", solicitud: "Solicitud de Sala"},
-        {nombre: "Maximo Mora", carrera:"Biologia", solicitud:"Solicitud de Cubiculo"}
+        {nombre: "Maximo Mora", carrera:"Biologia", solicitud:"Solicitud de Cubiculo"},
+        {nombre: "Kevin Parra", carrera:"Derecho", solicitud:"Solicitud de cambio "}
     ])
 
     return (

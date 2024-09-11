@@ -2,16 +2,15 @@
 
 import cat from "../assets/images/cat.jpg";
 
-import PhotoCard from "../components/PhotoCard";
+import PhotoCard from "../components/common/PhotoCard";
 
 function HomePage() {
 
     return (
         <div>
+            <p>Home</p>
 
-            <PhotoCard imageSrc={cat} name="Cat" />
-            
-            
+ 
 
         </div>
 
