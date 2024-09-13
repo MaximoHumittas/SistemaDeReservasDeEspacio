@@ -1,42 +1,35 @@
-import { useState } from 'react'
-import { BrowserRouter, Routes, Route  } from 'react-router-dom'
-
-
-import HomePage from './pages/HomePage'
-import UserPage from './pages/UserPage'
-import CalendarPage from './pages/CalendarPage'
-import Navbar from './components/Navbar'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import ApplicationPage from './pages/ApplicationPage'
-import AdministrationTablePage from './pages/AdmistrationPage'
-
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Intermediario from './screens/intermediario';
+import Login from './screens/login';
+import Home from './screens/home';
+import Registro from './screens/registro';
+import Unauthorized from './screens/unauthorized';
+import { UserProvider } from './userContext';
+import PrivateRoute from './components/privateRoute';
 
 
 function App() {
-
-
   return (
-    <div>
-      
-      <BrowserRouter>
-
-        <Navbar/>
+    <UserProvider>
+      <Router>
         <Routes>
-          <Route path='/' element={<HomePage/>} />
-          <Route path='/user' element={<UserPage/>} />
-          <Route path='/calendar' element={<CalendarPage/>} />
-          <Route path='/login' element={<LoginPage/>} />
-          <Route path='/register' element={<RegisterPage/>} />
-          <Route path='/applications' element={<ApplicationPage/>} />     
-          <Route path='/administration' element={<AdministrationTablePage/>}/>     
-        </Routes>
-      
-      </BrowserRouter>
+          <Route path="/" element={<Intermediario />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
 
-    </div>
-  )
+
+          {/*HOME COMPARTIDO ENTRE ESTUDIANTE Y DOCENTE*/}
+          <Route path="/home" element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          } />
+
+          <Route path="/unauthorized" element={<Unauthorized />} />
+        </Routes>
+      </Router>
+    </UserProvider>
+  );
 }
 
-export default App
+export default App;
