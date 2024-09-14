@@ -1,3 +1,4 @@
+//App.jsx:
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Intermediario from './screens/intermediario';
 import Login from './screens/login';

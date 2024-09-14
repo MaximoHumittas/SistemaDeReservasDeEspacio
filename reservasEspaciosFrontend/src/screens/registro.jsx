@@ -1,11 +1,11 @@
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState, useContext } from 'react';
 import { UserContext } from '../userContext';
 
 function Registro() {
     const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
-    const { login } = useContext(UserContext);
-    const {user} = useContext(UserContext);
+    const [error, setError] = useState('');
+    const { login, user } = useContext(UserContext);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -15,9 +15,14 @@ function Registro() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (formData.password !== formData.confirmPassword) {
             alert('Las contraseñas no coinciden');
+            return;
+        }
+
+        if (!user.tipoUsuario) {
+            alert('No se ha definido el tipo de usuario');
             return;
         }
 
@@ -40,19 +45,28 @@ function Registro() {
                 }),
             });
 
-            const result = await response.json();
+            const result = await response.json(); 
+
             console.log('Respuesta del backend:', result);
 
-            await login(user.tipoUsuario);
-            navigate('/home');
+            if (response.ok) {
+                console.log('Registro exitoso, iniciando sesión...');
+                await login(formData.email, formData.password); 
+                navigate('/home'); 
+            } else {
+                setError('Error en el registro: ' + result.error || 'Ocurrió un error');
+                console.error('Error en el registro:', result.error);
+            }
         } catch (error) {
             console.error('Error en el registro:', error);
+            setError('Error al registrar el usuario');
         }
     };
 
     return (
         <div className="registro-container">
             <h1>Registro de {user.tipoUsuario}</h1>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit} className="registro-form">
                 <div className="form-group">
                     <label htmlFor="email">Email:</label>
