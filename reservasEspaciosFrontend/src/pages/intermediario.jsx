@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../userContext';
 
 function Intermediario() {
-  const { updateUser } = useContext(UserContext);
+  const { updateUser,  } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSelection = (tipoUsuario) => {
-    updateUser({ tipoUsuario }); 
+    updateUser({ tipoUsuario}); 
     navigate('/login'); 
   };
 
