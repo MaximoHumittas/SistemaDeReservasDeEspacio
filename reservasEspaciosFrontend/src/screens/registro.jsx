@@ -5,13 +5,15 @@ import { UserContext } from '../userContext';
 function Registro() {
     const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
     const [error, setError] = useState('');
-    const { login, user } = useContext(UserContext);
+    const { login, user,updateUser } = useContext(UserContext);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
+
+    console.log(user.tipoUsuario)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,9 +52,14 @@ function Registro() {
             console.log('Respuesta del backend:', result);
 
             if (response.ok) {
+                
                 console.log('Registro exitoso, iniciando sesión...');
-                await login(formData.email, formData.password); 
+                updateUser({ tipoUsuario: user.tipoUsuario });
+                console.log("register, User context, tipo de usuario", user.tipoUsuario)
+                
                 navigate('/home'); 
+                
+
             } else {
                 setError('Error en el registro: ' + result.error || 'Ocurrió un error');
                 console.error('Error en el registro:', result.error);

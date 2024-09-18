@@ -6,6 +6,10 @@ function Login() {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
+  console.log("login, User context, tipo de usuario", user.tipoUsuario)
+
+
+  console.log(user.tipoUsuario)
   const handleLogin = async () => {
     if (user) {
       navigate('/home');
@@ -13,6 +17,8 @@ function Login() {
       alert('Por favor selecciona un tipo de usuario.');
     }
   };
+
+
   const handleRegister = () => {
     if (user) {
       navigate('/registro');
@@ -20,6 +26,8 @@ function Login() {
       alert('Por favor selecciona un tipo de usuario.');
     }
   };
+
+  
 
   return (
     <div>

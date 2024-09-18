@@ -19,7 +19,7 @@ app.post('/registro', async (req, res) => {
     console.log('Datos recibidos para registro:', { email, password, tipoUsuario });
 
     try {
-        const { data, error } = await supabase.auth.admin.createUser({
+        const { data, error } = await supabase.auth.signUp({
             email,
             password,
             user_metadata: { tipoUsuario }
@@ -30,10 +30,29 @@ app.post('/registro', async (req, res) => {
             return res.status(400).json({ error: error.message });
         }
 
+        const { data: insertData, error: insertError } = await supabase
+            .from('estudiantes')
+            .insert([{ email, password }])
+            .select();
+
+        if (insertError) {
+            console.error('error en insertar los usuarios en la tabla:', insertError);
+            return res.status(400).json({ error: insertError.message });
+        }
+
+
+
+
         console.log('Usuario registrado correctamente:', data);
         
         return res.status(201).json({ message: 'Usuario registrado exitosamente', data });
-    } catch (error) {
+    } 
+    
+    
+    
+    
+    
+    catch (error) {
         console.error('Error al registrar usuario:', error);
         return res.status(500).json({ error: 'Error interno del servidor' });
     }
