@@ -46,16 +46,44 @@ app.post('/registro', async (req, res) => {
         console.log('Usuario registrado correctamente:', data);
         
         return res.status(201).json({ message: 'Usuario registrado exitosamente', data });
-    } 
-    
-    
-    
-    
-    
-    catch (error) {
+
+
+    } catch (error) {
         console.error('Error al registrar usuario:', error);
         return res.status(500).json({ error: 'Error interno del servidor' });
     }
+});
+
+
+{/* LOGIN POST */}
+
+app.post('/login', async (req, res) => {
+
+    const {email,password, tipoUsuario} = req.body;
+    console.log('Datos recibidos para el login', {email,password,tipoUsuario})
+
+    try {
+        const {data, error} = await supabase.auth.signInWithPassword({
+            email,
+            password,
+            user_metadata : {tipoUsuario}
+        })
+
+        if (error) {
+            console.log('Error en el login', error)
+            return res.status(400).json({error:error.message})
+        }
+
+        console.log("Login hecho correctamente", data)
+        return res.status(201).json({message:"Usuario logeado correctamente", data})
+
+
+    } catch (error) {
+        console.log("Error en hacer login", error);
+        return res.status(500).json({error: "Error interno del servidor"})
+    }
+
+
 });
 
 

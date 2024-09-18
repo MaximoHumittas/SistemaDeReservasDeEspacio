@@ -74,6 +74,7 @@ function Registro() {
         <div className="registro-container">
             <h1>Registro de {user.tipoUsuario}</h1>
             {error && <p style={{ color: 'red' }}>{error}</p>}
+            
             <form onSubmit={handleSubmit} className="registro-form">
                 <div className="form-group">
                     <label htmlFor="email">Email:</label>
