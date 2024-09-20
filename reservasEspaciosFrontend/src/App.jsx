@@ -1,3 +1,4 @@
+//App.jsx:
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Intermediario from './pages/intermediario';
 import LoginPage from './pages/LoginPage';
@@ -6,8 +7,8 @@ import RegisterPage from './pages/RegisterPage';
 import Unauthorized from './pages/unauthorized';
 import { UserProvider } from './userContext';
 import PrivateRoute from './components/privateRoute';
-import Navbar from './components/Navbar';
-import ApplicationPage from './pages/ApplicationPage';
+import Navbar from './components/navbar';
+import CalendarPage from './screens/CalendarPage';
 
 function App() {
   return (
@@ -24,14 +25,42 @@ function App() {
 
           {/*HOME COMPARTIDO ENTRE ESTUDIANTE Y DOCENTE*/}
 
+          
 
           <Route path="/home" element={
             <PrivateRoute>
+              <Navbar/>
               <Home />
             </PrivateRoute>
           } />
           
 
+          <Route path="/calendar" element={
+            <PrivateRoute>
+              <Navbar />
+              <CalendarPage />
+            </PrivateRoute>
+          } />
+          
+        
+          
+
+          {/* 
+
+          <Route element={<PrivateRoute>
+            <Navbar/>
+          </PrivateRoute>
+          }
+          >
+            <Route path='/home' element={<Home/>} />
+            <Route path='/calendar' element={<CalendarPage/>} />
+          </Route>
+          
+          
+          */}
+          
+
+          
 
 
           <Route path="/unauthorized" element={<Unauthorized />} />
