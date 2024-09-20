@@ -1,10 +1,10 @@
 //App.jsx:
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Intermediario from './pages/intermediario';
-import LoginPage from './pages/LoginPage';
-import Home from './pages/home';
-import RegisterPage from './pages/RegisterPage';
-import Unauthorized from './pages/unauthorized';
+import Intermediario from './screens/intermediario';
+import Login from './screens/login';
+import Home from './screens/home';
+import Registro from './screens/registro';
+import Unauthorized from './screens/unauthorized';
 import { UserProvider } from './userContext';
 import PrivateRoute from './components/privateRoute';
 import Navbar from './components/navbar';
@@ -14,13 +14,10 @@ function App() {
   return (
     <UserProvider>
       <Router>
-        <Navbar/>
         <Routes>
-
           <Route path="/" element={<Intermediario />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/registro" element={<RegisterPage />} />
-          <Route path='/application' element={ <ApplicationPage /> } />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
 
 
           {/*HOME COMPARTIDO ENTRE ESTUDIANTE Y DOCENTE*/}

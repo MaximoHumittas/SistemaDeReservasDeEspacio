@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useContext } from 'react';
 import { UserContext } from '../userContext';
 
-function RegisterPage() {
+function Registro() {
     const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
     const [error, setError] = useState('');
     const { login, user,updateUser } = useContext(UserContext);
@@ -121,4 +121,4 @@ function RegisterPage() {
     );
 }
 
-export default RegisterPage;
+export default Registro;

@@ -139,4 +139,4 @@ function Login() {
   );
 }
 
-export default LoginPage;
+export default Login;
