@@ -15,7 +15,7 @@ function App() {
     <UserProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Intermediario />} />
+          <Route path="/" element={<CalendarPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
 
