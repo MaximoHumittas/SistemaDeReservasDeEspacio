@@ -89,84 +89,169 @@ app.post('/login', async (req, res) => {
 
 });
 
-app.post('/agendamiento', async (req, res) => {
+app.post('/reserva', async (req, res) => {
 
-    const {tipo_agendamiento,fecha,franja_horaria,agendado} = req.body;
-    console.log("Datos recibidos del agendamiento ", {tipo_agendamiento,fecha,franja_horaria,agendado})
+    const {usuario_id,hora_inicio,hora_fin,horario_id,recurso_id,fecha} = req.body;
+    console.log("Datos recibidos para la reserva ", {usuario_id,hora_inicio,hora_fin,horario_id,recurso_id,fecha})
 
 
-
+    console.log("Comenzando la reserva")
 
     try {
-        const { data: dataAgendamiento, error: errorAgendamiento} = await supabase.from('agendamiento').insert([
-            {
-                tipo_agendamiento,
-                fecha,
-                franja_horaria,
-                agendado
-            }
 
+        const {data: dataRecursos, error: errorRecursos } = await supabase.from('recursos_reservables').select('id')
+
+        if (errorRecursos) {
+            console.log("Error en conseguir los recursos")
             
-             
-        ])
+        } else {
+            let id = dataRecursos.map(rec => rec.id)
 
-        if (errorAgendamiento) {
-            console.error('Error al registrar en tabla agendamiento:', errorAgendamiento);
-            return res.status(400).json({ error: errorAgendamiento.message });
+            console.log(id)
+
+            console.log("a comenzar a consultar a otros lados")
+
         }
 
-
-        console.log('Fecha Agendada correctamente:', dataAgendamiento);
-
         
-        
-        console.log("Inicio de registrar en la tabla de horarios")
 
-        //se creo un id de horarios y id de recurso, nose como se hara pero es un ejemplo de como se llenaria la tabla
-        const idHorarios = 2
-        const idRecursos = 4
 
-        //formateo el dia de la fecha
-        const dia =   parseInt(dayjs(fecha).format('DD'), 10);
-        const fechas= franja_horaria.split('-')
-        const hora_inicio =  fechas[0]
-        const hora_fin = fechas[1]
 
-        console.log(dia,hora_inicio,hora_fin)
 
-        const {data: dataHorario, error: errorHorario} = await supabase.from('horarios').insert([
+        const {data: dataHorario, error: errorHorario} = await supabase.from('A horarios').insert([
             {
-                id: idHorarios,
-                dia:fecha,
+                recurso_id,
                 hora_inicio,
-                hora_fin
+                hora_fin,
+                fecha
+
             }
         ])
 
         if (errorHorario) {
-            console.log('Resultado de la inserción en agendamiento:', dataAgendamiento, errorAgendamiento);
-
-            console.error('Error en registrar en tabla horarios:', errorHorario.message);
-            console.log('Intentando insertar:', { dia, hora_inicio, hora_fin }); 
-            return res.status(400).json({ error: errorHorario.message });
+            console.log('Error al registrar el horario', errorHorario)
+            return res.status(400).json({error: errorHorario.message})
             
         }
 
-        console.log('Resultado de la inserción en agendamiento:', dataAgendamiento, errorAgendamiento);
-        return res.status(201).json({ message: 'Fecha Agendada correctamente', dataAgendamiento, dataHorario });
+        console.log("Horario registrado correctamente", dataHorario)
 
+
+
+        const { data: dataReserva, error: errorReserva} = await supabase.from('A reservas').insert([
+            {
+                usuario_id,
+                horario_id
+                
+            }    
+        ])
+
+        if (errorReserva) {
+            console.error('Error al registrar la reserva:', errorReserva);
+            return res.status(400).json({ error: errorReserva.message });
+        }
+
+        console.log('Fecha Agendada correctamente:', dataReserva);
+
+        
 
 
     } catch (error) {
-        console.log("Error en hacer el agendamiento", error);
+        console.log("Error en hacer el agendamiento y el horario", error);
         return res.status(500).json({error: "Error interno del servidor"})
 
 
     }
 
 
+ })
+
+ app.post('/recurso', async (req, res) => {
+
+    const {tipo,nombre} = req.body;
+    console.log("Datos recibidos del recurso ", {tipo,nombre})
+
+    try {
+        const {data: dataRecurso, error: errorRecurso} = await supabase.from('recursos_reservables').insert([
+            {
+                tipo,
+                nombre
+
+            }
+        ])
+
+        if (errorRecurso) {
+            console.log("Error en insertar en tabla de recursos reservables", errorRecurso.message)
+            return res.status(400).json({error: errorRecurso.message}) 
+        }
+
+        console.log('Insertado correctamente en la tabla recursos', dataRecurso)
+
+        
+    } catch (error) {
+        console.log("Error en hacer la insercion", error)
+        return res.status(500).json({error: "Error interno en el servidor"})
+        
+    }
 
 
+
+ })
+
+
+ app.get('/ObtenterHorario', async (req,res) => {
+    const {idResource,date} = req.query;
+
+    console.log("Consulta al obtener las horas de recurso ", idResource, "fecha", date)
+
+    try {
+        const {data: dataObtenerHorario, error: errorObtenerHorario} = await supabase
+
+        .from('horarios')
+        .select('id,hora_inicio,hora_fin')
+        .eq('recurso_id',idResource)
+        .eq('fecha',date)
+
+
+        if (errorObtenerHorario) {
+            return res.status(400).json({error: errorObtenerHorario})
+        }
+
+        console.log("Horarios obtenidos ", dataObtenerHorario)
+        res.status(200).json(dataObtenerHorario)
+        
+
+    } catch (error) {
+        console.log("Error al intentar obtener los horarios")
+        res.status(500).json({error: "Error en obtener los horarios"})
+    }
+    
+ })
+
+
+ app.get('/obtenerRecurso', async (req,res) => {
+    const {type} = req.query
+
+    console.log("Consulta de obtener recurso ,", type)
+
+    try {
+
+        const {data: dataObtenerRecurso, error: errorObtenerRecuso} = await supabase
+        .from('recursos_reservables')
+        .select('id')
+        .eq('tipo', type)
+        
+        if (errorObtenerRecuso) {
+            return res.status(400).json({error: errorObtenerRecuso.message})
+        }
+        
+        res.status(200).json(dataObtenerRecurso)
+
+    } catch (error) {
+
+        res.status(500).json({error: 'Error en obtener el tipo de recuso'})
+        
+    }
  })
 
 
