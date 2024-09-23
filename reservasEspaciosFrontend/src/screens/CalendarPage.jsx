@@ -9,25 +9,35 @@ import { bool } from 'prop-types';
 import AvailableHourSelector from '../components/AvailableHourSelector';
 
 
-
 function CalendarPage() {
 
     
     const [formData, setFormData] = useState({
-        user_id: 98,
+        user_id: 0,
         tipoAgendamiento: '', 
         fecha: '',
         hora_inicio: '',
         hora_fin: '',
-        recurso_id: 56
+        recurso_id: ''
     })
 
     const [selectedDate,setSelectedDate] = useState(null)
     const [startTime,setStartTime] = useState('')
     const [endTime,setEndTime] = useState('')
-
     const [idResources,setIdResources] = useState('')
+
+
     const [availableHours, setAvailableHours] = useState([])
+    const [busyHours, setBusyHours] = useState([])
+
+    //numeros random para el usuario
+
+    function RandomNumber() {
+        return Math.floor(Math.random()*100) +1
+    }
+
+    formData.user_id = 666
+
 
     const RegisterData = async (e) => {
         e.preventDefault();
@@ -35,6 +45,7 @@ function CalendarPage() {
         formData.fecha = dayjs(formData.fecha).format("YYYY-M-D")
         formData.hora_inicio = startTime
         formData.hora_fin = endTime
+        formData.recurso_id = idResources
 
         console.log("Datos enviados al backend para la reserva",formData)
 
@@ -107,51 +118,101 @@ function CalendarPage() {
         date = dayjs(date).format("YYYY-MM-D")
 
         console.log('datos enviandos al backend, ', date)
-        const newAvailableHours = []
+        const AuxbusyHours = []
+        let horasEncontradas = false
 
         console.log("Imprimiendo cada recurso por separado")
-        for (let index = 0; index < idResources.length; index++) {
+        for (let index = 0; index < idResources.length && !horasEncontradas; index++) {
+            console.log("Flag para para el for ", horasEncontradas) 
+
             let idResource = idResources[index];
 
-            const resourceId = idResource.id
-            console.log("Id: ",{resourceId})
+            const recurso_id = idResource.id
+            console.log("Id: ",{recurso_id})
 
             try {
-                const response = await fetch(`http://localhost:3000/ObtenterHorario?idResource=${resourceId}&date=${date}`)
+                const response = await fetch(`http://localhost:3000/ObtenerHorario?recurso_id=${recurso_id}&date=${date}`);
                 
                 if (!response.ok) {
-
-                    console.log("Error en obtener los recursos ")
-                    continue
-                    
+                    console.log("Error en obtener los recursos ", response.statusText)
+                    continue                    
                 }
-    
+
                 const result = await response.json()
-                console.log(`Horas obtenidas segun el tipo de recurso id ${id}, horas: ${result}`)
+                console.log(`Horas obtenidas segun el tipo de recurso id ${recurso_id}`, result);
 
+                
+                if (Array.isArray(result) && result.length > 0) {
 
-                if (result.length > 0) {
-                    newAvailableHours.push(...result)
+                    result.forEach((horario, index) => {
+                    console.log("index: ", index);
+                    console.log("Hora inicio: ", horario.hora_inicio);
+                    console.log("Hora final: ", horario.hora_fin);
+
+                    AuxbusyHours.push(`${horario.hora_inicio} - ${horario.hora_fin}`);
+
+                    
+
+                    if (AuxbusyHours.length <= 12) {
+                        console.log("El horario esta desocupado")
+                        horasEncontradas = true
+                        
+                    } else {
+                        console.log("El horario esta ocupado completamente")
+                    }
+
+                    
+                    
+                });
+
+                } else {
+                    console.log("No se encontraron horas disponibles para el recurso.");
                 }
-    
+
+
+
+
             } catch(error) {
-                console.log("Error en tener las horas disponibles")
+                console.error("Error en tener las horas disponibles: ", error);
             }
+
+            setIdResources(recurso_id)
+
+            console.log("ultima id", recurso_id)
         }
 
-        if (availableHours.length === 0) {
-            for (let hour = 8; hour < 19; hour++) {
 
-                const horaInicio = `${hour}:00`
-                const horaFinal = `${hour+1}:00`
+        console.log(AuxbusyHours.length)
 
-                newAvailableHours.push({hora_inicio: horaInicio, hora_fin: horaFinal})
-                
-                
-            }
+        
+
+        for (let index = 0; index < AuxbusyHours.length; index++) {
+            let horaInicio =(AuxbusyHours[index].split(' - ')[0]).slice(0, 5)
+            let horaFinal = (AuxbusyHours[index].split(' - ')[1]).slice(0, 5)
+
+            console.log(horaInicio,horaFinal)
+            AuxbusyHours[index] = `${horaInicio} - ${horaFinal}`
+
+        }
+        
+        const hoursFormattet = AuxbusyHours.map(h => {
+            let [horaInicio, horaFinal] = h.split(' - ').map(h => h.slice(0, 5));
+            return `${horaInicio} - ${horaFinal}`;
+        });
+        
+    
+        const Allhours = [];
+        for (let hour = 8; hour < 19; hour++) {
+            Allhours.push(`${hour}:00 - ${hour + 1}:00`);
         }
 
-        setAvailableHours(newAvailableHours)
+        const availableHours = Allhours.filter(hour => !hoursFormattet.includes(hour));
+
+        console.log("Hora ocupadas", AuxbusyHours);
+        console.log("Horas disponibles", availableHours);
+        setAvailableHours(availableHours)  
+
+
     }
 
 
@@ -237,7 +298,7 @@ function CalendarPage() {
                         }}
 
                     >
-                        <option value="">Seleccionar...</option>
+                        <option value="">Seleccionar ...</option>
                         <option value="CUBICULO">Cubículo</option>
                         <option value="GIMNASIO">Gimnasio</option>
                     </select>
@@ -261,18 +322,30 @@ function CalendarPage() {
                 </div>
 
                 <div>
-                    {
-                        availableHours.map((hour, index) => (
-
-                            <AvailableHourSelector key={index} horaInicio={hour.hora_inicio} HoraFinal={hour.hora_fin}/>
-
-                        ))
-                    }
-                    
+                    <label>Seleccionar Horario</label>
+                    <select 
+                        name="horario" 
+                        id="horario" 
+                        value={formData.hora_inicio}
+                        onChange={(e) => {
+                            const selectedHour = e.target.value;
+                            console.log(selectedHour)
+                            let horaInicio = selectedHour.split(' - ')[0].trim()
+                            let horaFin = selectedHour.split(' - ')[1].trim()
+                            console.log(horaInicio)
+                            console.log(horaFin)
+                 
+                            setStartTime(horaInicio)
+                            setEndTime(horaFin)
+                            
+                        }}
+                    >
+                        <option value="">Seleccionar ...</option>
+                        {availableHours.map((hour, index) => (
+                            <option key={index} value={hour}>{hour}</option>
+                        ))}
+                    </select>
                 </div>
-
-
-
 
 
                 <button type='submit'>Agendar Fecha</button>

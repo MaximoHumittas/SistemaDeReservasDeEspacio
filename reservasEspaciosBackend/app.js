@@ -91,34 +91,16 @@ app.post('/login', async (req, res) => {
 
 app.post('/reserva', async (req, res) => {
 
-    const {usuario_id,hora_inicio,hora_fin,horario_id,recurso_id,fecha} = req.body;
-    console.log("Datos recibidos para la reserva ", {usuario_id,hora_inicio,hora_fin,horario_id,recurso_id,fecha})
+    const {usuario_id,hora_inicio,hora_fin,recurso_id,fecha} = req.body;
+    console.log("Datos recibidos para la reserva ", {usuario_id,hora_inicio,hora_fin,recurso_id,fecha})
 
 
     console.log("Comenzando la reserva")
 
     try {
 
-        const {data: dataRecursos, error: errorRecursos } = await supabase.from('recursos_reservables').select('id')
 
-        if (errorRecursos) {
-            console.log("Error en conseguir los recursos")
-            
-        } else {
-            let id = dataRecursos.map(rec => rec.id)
-
-            console.log(id)
-
-            console.log("a comenzar a consultar a otros lados")
-
-        }
-
-        
-
-
-
-
-        const {data: dataHorario, error: errorHorario} = await supabase.from('A horarios').insert([
+        const {data: dataHorario, error: errorHorario} = await supabase.from('horarios').insert([
             {
                 recurso_id,
                 hora_inicio,
@@ -133,15 +115,31 @@ app.post('/reserva', async (req, res) => {
             return res.status(400).json({error: errorHorario.message})
             
         }
-
         console.log("Horario registrado correctamente", dataHorario)
 
+        
+        const { data: dataHorarioId, error: errorHorarioId } = await supabase
+            .from('horarios')
+            .select('id')
+            .eq('recurso_id', recurso_id)
+            .eq('hora_inicio', hora_inicio)
+            .eq('hora_fin', hora_fin)
+            .eq('fecha', fecha)
+            .single();
+
+        if (errorHorarioId) {
+            console.log('Error en tener el id del horario', errorHorarioId);
+            return res.status(400).json({ error: errorHorarioId.message });
+        }
+
+        const nuevoHorarioId = dataHorarioId.id;
+        console.log("ID del nuevo horario:", nuevoHorarioId);
 
 
-        const { data: dataReserva, error: errorReserva} = await supabase.from('A reservas').insert([
+        const { data: dataReserva, error: errorReserva} = await supabase.from('reservas').insert([
             {
                 usuario_id,
-                horario_id
+                horario_id:nuevoHorarioId
                 
             }    
         ])
@@ -199,21 +197,22 @@ app.post('/reserva', async (req, res) => {
  })
 
 
- app.get('/ObtenterHorario', async (req,res) => {
-    const {idResource,date} = req.query;
+ app.get('/ObtenerHorario', async (req,res) => {
+    const {recurso_id,date} = req.query;
 
-    console.log("Consulta al obtener las horas de recurso ", idResource, "fecha", date)
+    console.log("Consulta al obtener las horas de recurso ", recurso_id, "fecha", date)
 
     try {
         const {data: dataObtenerHorario, error: errorObtenerHorario} = await supabase
 
         .from('horarios')
         .select('id,hora_inicio,hora_fin')
-        .eq('recurso_id',idResource)
+        .eq('recurso_id',recurso_id)
         .eq('fecha',date)
 
 
         if (errorObtenerHorario) {
+            console.log("Error en obtener horario: ", errorObtenerHorario)
             return res.status(400).json({error: errorObtenerHorario})
         }
 
