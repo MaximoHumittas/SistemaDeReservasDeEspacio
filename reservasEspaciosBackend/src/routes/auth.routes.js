@@ -1,11 +1,14 @@
 import {Router} from 'express'
-import { register } from '../controllers/auth.controller.js'
+import { login,reserve,getResource } from '../controllers/auth.controller.js'
 
 //en proceso
 const router = Router()
 
-router.post('/router',register)
+router.post('/reserve',reserve)
 
-router.post('/login')
+router.post('/login', login)
+
+router.get('/getResource/:resourceType', getResource)
+
 
 export default router

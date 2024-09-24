@@ -12,6 +12,7 @@
   "dependencies": {
     "@date-io/dayjs": "^3.0.0",
     "@supabase/supabase-js": "^2.45.4",
+    "axios": "^1.7.7",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
@@ -22,6 +23,7 @@
     "react-big-calendar": "^1.14.1",
     "react-datepicker": "^7.3.0",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
     "react-router-dom": "^6.26.1",
     "reservasespaciosfrontend": "file:",
     "typescript": "^5.5.4"
