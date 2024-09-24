@@ -1,27 +1,33 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import HomePage from "./pages/HomePage"
+import HomePage from "./pages/HomePage";
 import NavBar from "./components/NavBar";
-import Login from "./pages/LoginPage";
 import Calendary from "./pages/CalendaryPage";
 import Formulary from "./pages/FormularyPage";
+import AuthProvider from "./context/AuthContext";
+import About from "./pages/AboutPage";
+
 
 export default function App() {
     return (
+        <AuthProvider>
+            <Router>
+                <NavBar />
 
-        <Router>
+                <Routes>
 
-            <NavBar/>
 
-            <Routes>
+                    <Route path="/" element={<HomePage /> } />
 
-                <Route path="/" element={<HomePage/>} />
-                <Route path="/login" element={<Login/>} />
-                <Route path="/calendary" element={<Calendary/>}/>
-                <Route path="/formulary" element={<Formulary/>} />
+                    <Route path="/about" element={<About />} />
 
-            </Routes>
+                    <Route path="/formulary" element={<Formulary />} />
+                    
+                    <Route path="/calendary" element={<Calendary />} />
 
-        </Router>
-    )
+
+                </Routes>
+            </Router>
+        </AuthProvider>
+    );
 }
