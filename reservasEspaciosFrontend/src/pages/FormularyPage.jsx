@@ -15,6 +15,7 @@ export default function Formulary(){
     const [startDate, setStartDate] = useState(null);
     const [availableHours, setAvailableHours] = useState([]);
     const [busyHours,setBusyHours] = useState([])
+    const [idResources,setIdResources] = useState([])
 
 
     const GetResourcesByType = async (event) => {
@@ -25,7 +26,7 @@ export default function Formulary(){
             try {
                 const response = await resourceRequest(event.target.value)
         
-                setValue("idResource",response)
+                setIdResources(response)
                 console.log("datos del register: ",register)
             } catch (error) {
                 console.log("Error en obtner el dato",error)
@@ -37,14 +38,16 @@ export default function Formulary(){
         const dataFormated = format(dateDataPicker, 'yyyy-MM-dd');
         setValue("date", dataFormated);
         
-        const idResources = getValues('idResource');
-        console.log("ID Resources:", idResources['data']);
+        
+        console.log("ID Resources:", idResources);
+        console.log("ID Resources:", idResources['data'][0]);
+        setValue("resourceId",idResources['data'][0]['id'])
         console.log("Formatted date:", dataFormated);
         let auxBusyHours = []
         let auxAvailableHours = []
         
         try {
-            const response = await hoursRequest(idResources['data'], dataFormated);
+            const response = await hoursRequest(idResources['data'][0], dataFormated);
     
             if (response) {  
                 console.log("response data", response);

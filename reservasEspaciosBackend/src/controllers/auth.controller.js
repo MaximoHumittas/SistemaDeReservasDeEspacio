@@ -11,31 +11,86 @@ export const reserve = async (req, res) => {
 
     console.log("Reserva de desde auth controller")
 
-    const {resourceType} = req.params
+    const {date,resourceId,hour } = req.params
 
-    console.log(resourceType)
+    console.log(date,resourceId,hour)
 
-    try {
-        const {data: dataReserve, error: errorReserve} = await supabase
-        .from('reservas')
+    const [hora_inicio, hora_fin] = hour.split(" - ");
+
+    console.log(hora_inicio, hora_fin)
+     
+    let nuevoHorarioId = 0
+
+    try { 
+        const {data: dataHorary, error: errorHorary} = await supabase
+        .from('horarios')
         .insert([
             {
-                resourceType
-               
+                recurso_id:resourceId,
+                hora_inicio,
+                hora_fin,
+                fecha:date
             }
         ])
 
-        if (errorReserve) {
-            console.log(errorReserve)
-            console.log("Error registrando")
-            
+        if (errorHorary) {
+            console.log(errorHorary)
+            console.log("Error con el horario")
+
         }
         
     } catch (error) {
-        console.log("Error intentado hacer  la reserva")
+        console.log("Error intentado hacer el horario")
         console.log(error)
         
+        
     }
+
+    try { 
+        const {data: dataHoraryId, error: errorHoraryId} = await supabase
+        .from('horarios')
+        .select('id')
+        .eq('hora_inicio', hora_inicio)
+        .eq('hora_fin',hora_fin)
+        .eq('fecha',date)
+        .single()
+
+        if (errorHoraryId) {
+            console.log("Error en conseguir el id de horario");
+            return res.status(500).json({ error: "Error al obtener el id el horario" });
+
+        }
+
+        nuevoHorarioId = dataHoraryId.id
+        
+
+
+ 
+        
+    } catch (error) {
+        console.log("Error intentado hacer el horario")
+        console.log(error)
+        
+        
+    }
+
+    const { data: dataReserva, error: errorReserva} = await supabase.from('reservas').insert([
+        {
+            usuario_id : 21,
+            horario_id:nuevoHorarioId
+            
+        }    
+    ])
+    if (errorReserva) {
+        console.error('Error al registrar la reserva:', errorReserva);
+        return res.status(400).json({ error: errorReserva.message });
+    }
+    console.log('Fecha Agendada correctamente:', dataReserva);
+
+
+
+
+    
 
 };
 

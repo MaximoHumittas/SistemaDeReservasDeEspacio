@@ -4,7 +4,7 @@ import { login,reserve,getResource,getHorary } from '../controllers/auth.control
 //en proceso
 const router = Router()
 
-router.post('/reserve/:resourceType',reserve)
+router.post('/reserve/:resourceId/:date/:hour',reserve)
 
 router.post('/login', login)
 
