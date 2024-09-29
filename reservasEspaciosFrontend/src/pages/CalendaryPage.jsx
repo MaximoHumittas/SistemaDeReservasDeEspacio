@@ -11,8 +11,8 @@ const events = [
     end: new Date(),
   },
   {
-    title: 'Evento 2',
-    start: new Date(2024, 9, 24, 12, 0), 
+    title: 'Gimnasio 4',
+    start: new Date(2024, 9, 27, 12, 0), 
     end: new Date(2024, 9, 24, 14, 0),
   },
 ];
