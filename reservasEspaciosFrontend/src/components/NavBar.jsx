@@ -23,9 +23,7 @@ export default function NavBar() {
 
             {user ? 
                 <>
-                    <li>
-                        <NavLink to="/calendary">calendary</NavLink>
-                    </li>
+                    
                     <li>
                         <NavLink to="/formulary" >formulary</NavLink>
                     </li>

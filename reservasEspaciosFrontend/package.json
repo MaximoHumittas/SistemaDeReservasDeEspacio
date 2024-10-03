@@ -11,6 +11,10 @@
   },
   "dependencies": {
     "@date-io/dayjs": "^3.0.0",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.1",
+    "@mui/material": "^6.1.1",
     "@supabase/supabase-js": "^2.45.4",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",

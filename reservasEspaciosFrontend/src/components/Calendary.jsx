@@ -21,7 +21,6 @@ export default function Calendary() {
   return (
     <div>
       <h1>Pruebas crear agendamientos</h1>
-
       <Calendar
         localizer={localizer}
         events={events}
