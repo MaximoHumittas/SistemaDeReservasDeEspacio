@@ -1,3 +1,4 @@
+
 import { connectSupabase } from '../database/db.js'
 //en proceso
 
@@ -113,4 +114,9 @@ export const getHorary = async (req, res) => {
         
     }
 
+}
+
+
+export const register = async (req,res) => {
+    
 }

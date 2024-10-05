@@ -1,26 +1,43 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginGenerico() {
   const { loginGeneric, registerUser } = useContext(AuthContext);
-  const [isRegistering, setIsRegistering] = useState(false); // Estado para alternar entre login y registro
+  const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    await loginGeneric(email, password);
+    const response = await loginGeneric(email, password);
+    
+    if (response) {
+      navigate('/'); 
+    } else {
+      alert("Error en el inicio de sesión, "); 
+    }
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+  
     if (password !== repeatPassword) {
       alert("Las contraseñas no coinciden");
       return;
     }
-    await registerUser(email, password);
+    
+    const responseRegister = await registerUser(email, password);
+    console.log("Respuesta registro; ", responseRegister)
+    if (responseRegister) {
+      navigate('/');
+    } else {
+      alert("Error en el registro"); 
+    }
   };
+  
 
   return (
     <div>

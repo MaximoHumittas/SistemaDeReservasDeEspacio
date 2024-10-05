@@ -55,33 +55,114 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const loginGeneric = async (email, password) => {
+  const loginGeneric = async (userEmail, userPassword) => {
+
+
     try {
-      const { error, user } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      setUser(user);
+        console.log("Iniciando sesión con:", { userEmail, userPassword });
+
+
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: userEmail,
+            password: userPassword
+        });
+
+
+        if (error) {
+            console.error("Error con el login generico:", error.message);
+            return null;
+        }
+
+        if (!data || !data.user) {
+            console.alert("Usuario no encontrado. verificacion de las credenciales.");
+            return null;
+
+
+
+        }
+
+        console.log("Data ,",  data)
+        console.log("Data ,",  data.user.email)
+        const email = data.user.email
+
+
+
+        setUser({
+            id: data.user.id,
+            email: data.user.email,
+            avatar: data.user.user_metadata?.avatar_url, 
+            name: email.split('@')[0],
+        });
+
+        return data.user;
+
     } catch (error) {
-      console.error("Error al iniciar sesión genérico:", error);
+        console.error("Error al iniciar el login generico:", error);
+        return null; 
     }
   };
 
+
+  
+  
   const registerUser = async (email, password) => {
+    console.log("Auth Context ", email, password);
     try {
-      const { error: signUpError, user } = await supabase.auth.signUp({ email, password });
-      if (signUpError) throw signUpError;
+        const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+        
+        
+        if (signUpError) {
+            console.log("Error al registrar usuario: ", signUpError.message); 
+            return null;
 
-      const hashedPassword = bcrypt.hashSync(password, 10);
-      const { error: insertError } = await supabase
-        .from("usuarios")
-        .insert([{ email, passwd: hashedPassword }]);
-      
-      if (insertError) throw insertError;
 
-      setUser(user);
+        }
+
+        if (!data || !data.user) {
+            console.log("Usuario no registrado correctamente. revisa la respuesta.");
+            return null;
+
+
+        }
+
+        const user = data.user;
+
+
+
+        const { error: insertError } = await supabase.from("usuarios").insert([{ email: user.email, passwd: password }]);
+        
+        if (insertError) {
+            console.log("Error al insertar en la tabla usuarios: ", insertError.message);
+            return null;
+
+        }
+        
+        console.log("Data user ,",  user)
+        console.log("Data ")
+
+
+        setUser({
+            id: user.id,
+            email: user.email,
+            avatar: user.user_metadata?.avatar_url,
+            name: email.split('@')[0]
+        });
+
+       
+
+        console.log("Usuario registrado y insertado  en la tabla usuarios correctamente");
+
+        return data.user;
+
+
+
     } catch (error) {
-      console.error("Error al registrarse y guardar en la tabla usuarios:", error);
+        console.error("Error general al registrarse:", error);
     }
   };
+  
+  
 
   const logout = async () => {
     try {

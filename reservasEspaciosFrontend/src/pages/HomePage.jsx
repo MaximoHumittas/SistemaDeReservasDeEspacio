@@ -6,8 +6,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <h1>{user ? "Home con sesión" : "Home sin sesión, ingresa por favor"}</h1>
-      {/* Aquí puedes añadir más contenido de la página de inicio */}
+      <h1>{user ? `Bienvenido, ${user.name}` : "Home sin sesión, ingresa por favor"}</h1>
     </div>
   );
 }
