@@ -77,7 +77,7 @@ const AuthProvider = ({ children }) => {
 
             });
 
-            if (error) throw new Error("Error al hacer login");
+            if (error) throw new Error("Error al hacer login  ");
         } catch (error) {
             console.error(error);
         }
