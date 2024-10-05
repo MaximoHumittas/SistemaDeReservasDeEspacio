@@ -1,32 +1,33 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Intermediario from './screens/intermediario';
-import Login from './screens/login';
-import Home from './screens/home';
-import Registro from './screens/registro';
-import Unauthorized from './screens/unauthorized';
-import { UserProvider } from './userContext';
-import PrivateRoute from './components/privateRoute';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-function App() {
-  return (
-    <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Intermediario />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<Registro />} />
-          {/*HOME COMPARTIDO ENTRE ESTUDIANTE Y DOCENTE*/}
-          <Route path="/home" element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
-          } />
+import HomePage from "./pages/HomePage";
+import NavBar from "./components/NavBar";
+import Calendary from "./pages/CalendaryPage";
+import Formulary from "./pages/FormularyPage";
+import AuthProvider from "./context/AuthContext";
+import About from "./pages/AboutPage";
 
-          <Route path="/unauthorized" element={<Unauthorized />} />
-        </Routes>
-      </Router>
-    </UserProvider>
-  );
+
+export default function App() {
+    return (
+        <AuthProvider>
+            <Router>
+                <NavBar />
+
+                <Routes>
+
+
+                    <Route path="/" element={<HomePage /> } />
+
+                    <Route path="/about" element={<About />} />
+
+                    <Route path="/formulary" element={<Formulary />} />
+                    
+                    <Route path="/calendary" element={<Calendary />} />
+
+
+                </Routes>
+            </Router>
+        </AuthProvider>
+    );
 }
-
-export default App;
