@@ -47,3 +47,11 @@ export const hoursRequest = async (idResources, date) => {
         return null; 
     }
 };
+
+
+//nunca se ocupo
+export const register = async (data) => {
+
+    console.log("Data de register Api: ", data )
+
+}

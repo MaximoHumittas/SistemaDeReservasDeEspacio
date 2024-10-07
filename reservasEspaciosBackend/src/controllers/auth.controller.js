@@ -2,25 +2,15 @@
 import { connectSupabase } from '../database/db.js'
 //en proceso
 
-
 const supabase = connectSupabase()
 
-
-
 export const reserve = async (req, res) => {
-
     console.log("Reserva de desde auth controller")
-
     const {date,resourceId,hour } = req.params
-
     console.log(date,resourceId,hour)
-
     const [hora_inicio, hora_fin] = hour.split(" - ");
-
-    console.log(hora_inicio, hora_fin)
-     
+    console.log(hora_inicio, hora_fin)   
     let nuevoHorarioId = 0
-
     try { 
         const {data: dataHorary, error: errorHorary} = await supabase
         .from('horarios')
@@ -32,20 +22,14 @@ export const reserve = async (req, res) => {
                 fecha:date
             }
         ])
-
         if (errorHorary) {
             console.log(errorHorary)
             console.log("Error con el horario")
-
-        }
-        
+        }      
     } catch (error) {
         console.log("Error intentado hacer el horario")
-        console.log(error)
-        
-        
+        console.log(error)       
     }
-
     try { 
         const {data: dataHoraryId, error: errorHoraryId} = await supabase
         .from('horarios')
@@ -58,22 +42,13 @@ export const reserve = async (req, res) => {
         if (errorHoraryId) {
             console.log("Error en conseguir el id de horario");
             return res.status(500).json({ error: "Error al obtener el id el horario" });
-
         }
-
         nuevoHorarioId = dataHoraryId.id
-        
-
-
- 
-        
+                
     } catch (error) {
         console.log("Error intentado hacer el horario")
-        console.log(error)
-        
-        
+        console.log(error)   
     }
-
     const { data: dataReserva, error: errorReserva} = await supabase.from('reservas').insert([
         {
             usuario_id : 21,
@@ -85,19 +60,9 @@ export const reserve = async (req, res) => {
         console.error('Error al registrar la reserva:', errorReserva);
         return res.status(400).json({ error: errorReserva.message });
     }
-    console.log('Fecha Agendada correctamente:', dataReserva);
-
-
-
-
-    
-
+    console.log('Fecha Agendada correctamente:', dataReserva); 
 };
-
-
-
 export const login = (req, res) => res.send("Login")
-
 
 export const getResource = async (req, res) => {
     const { resourceType } = req.params;
@@ -116,7 +81,6 @@ export const getResource = async (req, res) => {
             return res.status(500).json({ error: "Error al obtener el recurso" });
         }
 
-
         return res.status(200).json(dataResource);
 
     } catch (error) {
@@ -130,8 +94,6 @@ export const getHorary = async (req, res) => {
     console.log("Id : ",id)
     console.log("fecha: ",date)
 
-
-
     try {
         const {data: dataHorary, error: errorHorary} = await supabase
         .from('horarios')
@@ -139,18 +101,11 @@ export const getHorary = async (req, res) => {
         .eq('recurso_id',id)
         .eq('fecha',date)
 
-
         if (errorHorary) {
             console.log("Error en conseguir lo horarios")
-            return res.status(500).json({error: "Error en obtener los horarios"})
-            
+            return res.status(500).json({error: "Error en obtener los horarios"})   
         }
-
-
         console.log("horas ocupadas : ",dataHorary)
-
-        
-        
         return res.status(200).json(dataHorary)
         
     } catch (error) {
@@ -159,4 +114,9 @@ export const getHorary = async (req, res) => {
         
     }
 
+}
+
+
+export const register = async (req,res) => {
+    
 }

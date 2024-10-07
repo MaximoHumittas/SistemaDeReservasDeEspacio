@@ -1,0 +1,30 @@
+.calendar-container {
+    height: 500px;
+    margin: 20px;
+  }
+  
+  .calendar-button {
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .button-biblioteca {
+    background-color: red;
+  }
+  
+  .button-cubiculo {
+    background-color: blue;
+  }
+  
+  .button-active {
+    opacity: 1;
+  }
+  
+  .button-inactive {
+    opacity: 0.5;
+  }
+  
