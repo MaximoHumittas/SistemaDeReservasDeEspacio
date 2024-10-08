@@ -1,6 +1,6 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function LoginGenerico() {
   const { loginGeneric, registerUser } = useContext(AuthContext);

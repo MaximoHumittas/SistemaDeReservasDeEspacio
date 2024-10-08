@@ -1,5 +1,5 @@
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useContext } from 'react';
 import { UserContext } from '../userContext';
 
 function Registro() {

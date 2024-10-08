@@ -10,4 +10,4 @@ export const connectSupabase = () => {
         console.log(error)
     }
 }
-export default connectSupabase
+export default connectSupabase.s

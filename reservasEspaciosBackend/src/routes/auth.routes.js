@@ -1,5 +1,5 @@
-import {Router} from 'express'
-import { login,reserve,getResource,getHorary } from '../controllers/auth.controller.js'
+import { Router } from 'express'
+import { getHorary, getResource, login, reserve } from '../controllers/auth.controller.js'
 
 //en proceso
 const router = Router()

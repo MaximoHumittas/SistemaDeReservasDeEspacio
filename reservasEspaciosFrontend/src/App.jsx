@@ -1,10 +1,10 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-import HomePage from "./pages/HomePage";
 import NavBar from "./components/NavBar";
-import Formulary from "./pages/FormularyPage";
 import AuthProvider from "./context/AuthContext";
 import About from "./pages/AboutPage";
+import Formulary from "./pages/FormularyPage";
+import HomePage from "./pages/HomePage";
 import LoginGenerico from "./pages/LoginGenerico";
 
 

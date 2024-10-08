@@ -1,11 +1,11 @@
-import 'react-big-calendar/lib/css/react-big-calendar.css'; 
+import { format } from 'date-fns';
+import { useState } from 'react';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { reserveRequest, resourceRequest, hoursRequest } from '../api/auth';
-import { format } from 'date-fns';
 import Calendary from 'reservasEspaciosFrontend/src/components/Calendary.jsx'; // Importa el nuevo componente
+import { hoursRequest, reserveRequest, resourceRequest } from '../api/auth';
 
 export default function Formulary() {
 

@@ -1,5 +1,5 @@
-import app from './app.js'
-import { connectSupabase } from './database/db.js'
+import app from './app.js';
+import { connectSupabase } from './database/db.js';
 
 connectSupabase()
 app.listen(3000, () => {
