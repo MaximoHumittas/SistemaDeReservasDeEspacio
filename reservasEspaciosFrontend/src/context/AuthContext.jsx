@@ -46,15 +46,34 @@ const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  const loginWithGoogle = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
-      if (error) throw new Error("Error al hacer login con Google");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  /////////// -------------------------------------------------------------------------------------/////////////////////////////
 
+  async function loginWithGoogle() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    })
+
+    if (error) {
+      console.error('Error al iniciar sesión con Google:', error.message)
+    } else {
+      // Obtener los datos del usuario autenticado
+      const user = data.user
+
+      if (user) {
+        // Guardar el correo en la tabla 'Perfiles'
+        const { error: insertError } = await supabase
+          .from('Perfiles')
+          .insert([{ email: user.email }])
+
+        if (insertError) {
+          console.error('Error al guardar el correo:', insertError.message)
+        } else {
+          console.log('Correo guardado exitosamente en la tabla Perfiles')
+        }
+      }
+    }
+  }
+///---------------------------------------------------------------------------------------//////////////////////////////////////////////
   const loginGeneric = async (userEmail, userPassword) => {
 
 
