@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { reserveRequest, resourceRequest, hoursRequest } from '../api/auth';
 import { format } from 'date-fns';
-import Calendary from 'reservasEspaciosFrontend/src/components/Calendary.jsx'; // Importa el nuevo componente
+import Calendary from '../components/Calendary'; // Importa el nuevo componente
 
 export default function Formulary() {
 
@@ -49,13 +49,17 @@ export default function Formulary() {
   const GetHoraryById = async (dateDataPicker) => {
     const dataFormated = format(dateDataPicker, 'yyyy-MM-dd');
     setValue("date", dataFormated);
-    setValue("resourceId", idResources['data'][0]['id']);
+    console.log(idResources)
+    setValue("resourceId", idResources[0]['id']);
 
     let auxBusyHours = [];
     let auxAvailableHours = [];
 
+    console.log('id Resources', idResources[0])
+    console.log('data formated ', dataFormated)
+
     try {
-      const response = await hoursRequest(idResources['data'][0], dataFormated);
+      const response = await hoursRequest(idResources[0], dataFormated);
       if (response) {
         for (let index = 0; index < response.length; index++) {
           const starTime = response[index]['hora_inicio'].substring(0, 5);

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API = 'http://localhost:3000/api'
+const API = 'http://localhost:3000/auth'
 
 
 export const reserveRequest = async (data) => { 
@@ -23,7 +23,24 @@ export const reserveRequest = async (data) => {
     }
 };
 
-export const resourceRequest = async (typeResource) =>  await axios.get(`${API}/getResource/${typeResource}`);
+export const resourceRequest = async (typeResource) => {
+
+    
+
+    try {
+
+        const response = await axios.get(`${API}/getResource/${typeResource}`);
+        console.log("Respuesta de obtener dato ", response.data)
+        return response.data
+        
+    } catch (error) {
+
+        console.error("Error en obtener el dato", error)
+        
+    }
+
+
+}
 
 
 export const hoursRequest = async (idResources, date) => {
