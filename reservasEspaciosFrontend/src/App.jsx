@@ -5,6 +5,7 @@ import About from "./pages/AboutPage";
 import Formulary from "./pages/FormularyPage";
 import HomePage from "./pages/HomePage";
 import LoginGenerico from "./pages/LoginGenerico";
+import ReclamoForm from "./pages/ReclamoForm";
 
 export default function App() { 
   return ( 
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/about" element={<About />} /> 
           <Route path="/formulary" element={<Formulary />} /> 
           <Route path="/login-generico" element={<LoginGenerico />} /> 
+          <Route path="/reclamo" element={<ReclamoForm />} />
         </Routes> 
       </Router> 
     </AuthProvider> 

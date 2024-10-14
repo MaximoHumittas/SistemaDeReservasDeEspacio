@@ -19,6 +19,9 @@ export default function NavBar() {
             <li>
               <NavLink to="/about">About</NavLink>
             </li>
+            <li>
+              <NavLink to="/reclamo">Reclamo</NavLink>
+            </li>
           </>
         )}
         <li>

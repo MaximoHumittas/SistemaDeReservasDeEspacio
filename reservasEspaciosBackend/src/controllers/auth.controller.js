@@ -138,7 +138,7 @@ export const register = async (req, res) => {
                 .insert([{ id: googleId, email, passwd: null }]); // Usa null o un valor por defecto para passwd
 
             if (userError) {
-                return res.status(400).json({ error: userError.message });
+                return res.status(390).json({ error: userError.message });
             }
         }
 
@@ -148,7 +148,7 @@ export const register = async (req, res) => {
             .insert([{ email }]); // Ajusta los campos según tu estructura de tabla
 
         if (additionalError) {
-            return res.status(400).json({ error: additionalError.message });
+            return res.status(390).json({ error: additionalError.message });
         }
 
         return res.status(201).json({ message: "Usuario registrado correctamente en ambas tablas", userData, additionalData });
