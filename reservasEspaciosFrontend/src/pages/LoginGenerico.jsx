@@ -10,8 +10,17 @@ export default function LoginGenerico() {
   const [repeatPassword, setRepeatPassword] = useState("");
   const navigate = useNavigate();
 
+
+  const isValidEmail = (email) => {
+    return email.endsWith(".alu.uct") || email.endsWith("uct.cl");
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!isValidEmail(email)) {
+      alert("El correo debe terminar en .alu.uct o uct.cl");
+      return;
+    };
+    
     const response = await loginGeneric(email, password);
     
     if (response) {
