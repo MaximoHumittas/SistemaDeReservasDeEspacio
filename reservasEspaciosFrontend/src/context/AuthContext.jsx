@@ -34,6 +34,7 @@ const AuthProvider = ({ children }) => {
         const provider = session.user.app_metadata.providers[0]
         const userEmail = session.user.email
         const userRole = getRoleByEmail(userEmail.split('@')[1])
+        const userName = userEmail.split('@')[0]
 
 
         console.log("Provedor de login ", provider)
@@ -78,7 +79,7 @@ const AuthProvider = ({ children }) => {
           id: session.user.id,
           email: session.user.email,
           avatar: session.user.user_metadata.avatar_url,
-          name: session.user.user_metadata.name,
+          name: userName,
           role: userRole
         });
       }
