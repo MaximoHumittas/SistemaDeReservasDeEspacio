@@ -13,68 +13,90 @@ export const AuthContext = createContext({
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  const getRoleByEmail = (email) => {
+    if (email.endsWith("alu.uct.cl")) {
+      return "estudiante";
+
+    } else if (email.endsWith("uct.cl")) {
+      return "docente";
+
+    } else {
+      return "test"; 
+    }
+  };
+
   useEffect(() => {
 
     
     const checkUserSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
+        const provider = session.user.app_metadata.providers[0]
+        const userEmail = session.user.email
+        const userRole = getRoleByEmail(userEmail.split('@')[1])
+
+
+        console.log("Provedor de login ", provider)
+        console.log("Email ", userEmail)
+        console.log("ROle ", userRole)
+
+        if (provider === "google") {
+          
+          const {data,error} = await supabase
+          .from('usuarios')
+          .select('email')
+          .eq('email',userEmail)
+          if (error) {
+            console.log("Error en consultar los correos en la tabla de usuarios")
+            
+          } else if(data.length > 0) {
+            console.log("El correo ya existe en la tabla de usuarios ", data)
+          } else {
+            console.log("EL correo no esta ", data)
+            
+            const { error: insertError } = await supabase
+            .from('usuarios')
+            .insert([{ 
+              email: userEmail,
+              role: userRole
+            
+            }]); 
+            if (insertError) {
+              console.error("Error al insertar el usuario:", insertError.message);
+            } else {
+              console.log("Nuevo usuario insertado correctamente en la tabla 'usuarios'.");
+            }
+
+
+          }
+
+
+        }
+
+        
         setUser({
           id: session.user.id,
           email: session.user.email,
           avatar: session.user.user_metadata.avatar_url,
           name: session.user.user_metadata.name,
+          role: userRole
         });
       }
+
+
     };
 
     const { data: authListener } = supabase.auth.onAuthStateChange( async (event, session) => {
       if (session) {
 
-        const userEmail = session.user.email
-        let userRegister = true
-
-        const {data: userExistData, error: userExistError} = await supabase
-        .from('usuarios')
-        .select('email')
-        .eq('email', userEmail)
-        .single()
-
-        console.log(userExistData)
-
-        if (userExistError) {
-          userRegister = false
-
-          console.log("El email no existe, asi que se va a registrar")
-
-          const {data : userInsertData, error: userInsertError} = await supabase
-          .from('usuarios')
-          .insert([
-            {email: userEmail}
-          ])
-
-          if (userInsertError) {
-            console.log("Error al insertar los datos en la tabla")
-          }
-
-          console.log("Exito en registrar usuario")
-
-
-          
-        }
-
-        if (userRegister) {
-          console.log("El usuario ya esta registrado")
-        } else {
-          console.log("registro de usuario fallado")
-        }
-
+       
 
         setUser({
           id: session.user.id,
           email: session.user.email,
           avatar: session.user.user_metadata.avatar_url,
           name: session.user.user_metadata.name,
+    
         });
       } else {
         setUser(null);
@@ -134,6 +156,8 @@ const AuthProvider = ({ children }) => {
         console.log("Data ,",  data)
         console.log("Data ,",  data.user.email)
         const email = data.user.email
+        
+        const userRole = getRoleByEmail(email)
 
 
 
@@ -142,6 +166,7 @@ const AuthProvider = ({ children }) => {
             email: data.user.email,
             avatar: data.user.user_metadata?.avatar_url, 
             name: email.split('@')[0],
+            role: userRole
         });
 
         return data.user;
@@ -177,9 +202,13 @@ const AuthProvider = ({ children }) => {
 
         const user = data.user;
 
+        
+        const userRole = getRoleByEmail(email)
+        console.log(userRole)
 
 
-        const { error: insertError } = await supabase.from("usuarios").insert([{ email: user.email, passwd: password }]);
+
+        const { error: insertError } = await supabase.from("usuarios").insert([{ email: user.email, passwd: password, role: userRole }]);
         
         if (insertError) {
             console.log("Error al insertar en la tabla usuarios: ", insertError.message);
@@ -195,7 +224,8 @@ const AuthProvider = ({ children }) => {
             id: user.id,
             email: user.email,
             avatar: user.user_metadata?.avatar_url,
-            name: email.split('@')[0]
+            name: email.split('@')[0],
+            role: userRole
         });
 
        
