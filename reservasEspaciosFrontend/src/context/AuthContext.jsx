@@ -14,6 +14,8 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+
+    
     const checkUserSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -26,8 +28,48 @@ const AuthProvider = ({ children }) => {
       }
     };
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange( async (event, session) => {
       if (session) {
+
+        const userEmail = session.user.email
+        let userRegister = true
+
+        const {data: userExistData, error: userExistError} = await supabase
+        .from('usuarios')
+        .select('email')
+        .eq('email', userEmail)
+        .single()
+
+        console.log(userExistData)
+
+        if (userExistError) {
+          userRegister = false
+
+          console.log("El email no existe, asi que se va a registrar")
+
+          const {data : userInsertData, error: userInsertError} = await supabase
+          .from('usuarios')
+          .insert([
+            {email: userEmail}
+          ])
+
+          if (userInsertError) {
+            console.log("Error al insertar los datos en la tabla")
+          }
+
+          console.log("Exito en registrar usuario")
+
+
+          
+        }
+
+        if (userRegister) {
+          console.log("El usuario ya esta registrado")
+        } else {
+          console.log("registro de usuario fallado")
+        }
+
+
         setUser({
           id: session.user.id,
           email: session.user.email,
@@ -48,12 +90,19 @@ const AuthProvider = ({ children }) => {
 
   const loginWithGoogle = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
+      const { data, error } = await supabase.auth.signInWithOAuth({
+
+         provider: "google" 
+        
+        });
+
       if (error) throw new Error("Error al hacer login con Google");
+      console.log("Login con google, con exito")
     } catch (error) {
       console.error(error);
     }
   };
+
 
   const loginGeneric = async (userEmail, userPassword) => {
 
