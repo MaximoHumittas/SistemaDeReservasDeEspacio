@@ -6,7 +6,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <h1>{user ? `Bienvenido, ${user.name}, Role : ${user.role}` : "Home sin sesión, ingresa por favor"}</h1>
+      <h1>{user ? `Bienvenido, ${user.name}, Role : ${user.role} Id del usuario : ${user.id}` : "Home sin sesión, ingresa por favor"}</h1>
     </div>
   );
 }

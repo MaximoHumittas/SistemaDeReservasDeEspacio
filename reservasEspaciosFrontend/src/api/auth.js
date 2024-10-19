@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { any } from 'prop-types';
+
 
 const API = 'http://localhost:3000/auth'
 
@@ -6,7 +8,7 @@ const API = 'http://localhost:3000/auth'
 export const reserveRequest = async (data) => { 
     try {
         console.log("Data de reserveRequest: ", data);
-
+        const idUser = data['idUser']
         const date = data['date']
         const resourceId = data['resourceId']
         const hour = data['hour']
@@ -14,8 +16,10 @@ export const reserveRequest = async (data) => {
         
         
         console.log("date: ",date,"resourceType ",resourceId,"hour ", hour)
+
+
         
-        const response = await axios.post(`${API}/reserve/${resourceId}/${date}/${hour}`);
+        const response = await axios.post(`${API}/reserve/${idUser}/${resourceId}/${date}/${hour}`);
         return response.data;  // Devuelve la respuesta
     } catch (error) {
         console.error("Error en la solicitud de reserva:", error);
@@ -64,6 +68,23 @@ export const hoursRequest = async (idResources, date) => {
         return null; 
     }
 };
+
+export const getUserId = async (email) => {
+
+    console.log("Email ", email )
+
+    try {
+        const response = await axios.get(`${API}/getId/${email}`)
+
+        return response.data
+        
+    } catch (error) {
+
+        console.error("Error en registrar la hora ")
+        return null
+        
+    }
+}
 
 
 //nunca se ocupo

@@ -1,13 +1,16 @@
 import 'react-big-calendar/lib/css/react-big-calendar.css'; 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { reserveRequest, resourceRequest, hoursRequest } from '../api/auth';
 import { format } from 'date-fns';
 import Calendary from '../components/Calendary'; // Importa el nuevo componente
+import { AuthContext } from "../context/AuthContext";
 
 export default function Formulary() {
+
+  const { user } = useContext(AuthContext);
 
   const { register, handleSubmit, setValue, getValues } = useForm();
   const [startDate, setStartDate] = useState(null);
@@ -15,11 +18,14 @@ export default function Formulary() {
   const [busyHours, setBusyHours] = useState([]);
   const [idResources, setIdResources] = useState([]);
   const [isResourceTypeSelected, setIsResourceTypeSelected] = useState(false); // Indicador si se seleccionó tipo de recurso
+  //id 
+
   const [errorMessages, setErrorMessages] = useState({
     date: '',
     hour: '',
   });
 
+  setValue("idUser", user.id )
   const GetResourcesByType = async (event) => {
     const resourceType = event.target.value;
     if (resourceType) {
@@ -92,6 +98,9 @@ export default function Formulary() {
   };
 
   const onSubmit = async (values) => {
+
+    console.log("values: ", values)
+
     try {
       const response = await reserveRequest(values);
       console.log(response);

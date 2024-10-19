@@ -2,12 +2,14 @@ import supabase from '../db.js'; // Importar el cliente de Supabase
 
 export const reserve = async (req, res) => {
     console.log("Reserva desde auth controller");
-    const { date, resourceId, hour } = req.params;
+    const { idUser,date, resourceId, hour } = req.params;
     console.log(date, resourceId, hour);
     const [hora_inicio, hora_fin] = hour.split(" - ");
     console.log(hora_inicio, hora_fin);
 
     let nuevoHorarioId = 0;
+
+    console.log("Id user desde el auth ", idUser )
     
     try {
         const { data: dataHorary, error: errorHorary } = await supabase
@@ -55,7 +57,7 @@ export const reserve = async (req, res) => {
 
     const { data: dataReserva, error: errorReserva } = await supabase.from('reservas').insert([
         {
-            usuario_id: 21, // Cambia esto según sea necesario
+            usuario_id: idUser, // Cambia esto según sea necesario
             horario_id: nuevoHorarioId
         }    
     ]);
@@ -121,6 +123,27 @@ export const getHorary = async (req, res) => {
     }
 };
 
-export const register = async (req, res) => { 
-    
-};
+export const getId = async (req, res) => {
+    const {email} = req.params
+
+    try {
+        const { data: dataId, error: errorId } = await supabase
+        .from('usuarios')
+        .select('*')
+        .eq('email',email)
+        .single()
+
+        if (errorId) {
+            console.log("Error en obtener el id del usuario")
+        }
+
+        console.log("Id del usuario ", dataId )
+        return res.status(200).json(dataId)
+        
+    } catch (error) {
+        console.error("Error en intentar obtener la id del usuario")
+        return res.status(500).json({error : "Error en obtener el id del usuario"})
+        
+    }
+
+}

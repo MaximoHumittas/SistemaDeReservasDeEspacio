@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { supabase } from "../supabase/client";
+import { getUserId } from '../api/auth';
 import bcrypt from "bcryptjs";
 
 export const AuthContext = createContext({
@@ -9,6 +10,7 @@ export const AuthContext = createContext({
   registerUser: async () => {},
   logout: async () => {},
 });
+
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -25,87 +27,88 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
 
-    
-    const checkUserSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        const provider = session.user.app_metadata.providers[0]
-        const userEmail = session.user.email
-        const userRole = getRoleByEmail(userEmail.split('@')[1])
-        const userName = userEmail.split('@')[0]
+  const checkUserSession = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (session) {
+      const provider = session.user.app_metadata.providers[0]
+      const userEmail = session.user.email
+      const userRole = getRoleByEmail(userEmail.split('@')[1])
+      const userName = userEmail.split('@')[0]
 
 
-        console.log("Provedor de login ", provider)
-        console.log("Email ", userEmail)
-        console.log("ROle ", userRole)
+      console.log("Provedor de login ", provider)
+      console.log("Email ", userEmail)
+      console.log("Role ", userRole)
 
-        if (provider === "google") {
+      const userId = await getUserId(userEmail);
+
+
+
+
+      if (provider === "google") {
+        
+        const {data,error} = await supabase
+        .from('usuarios')
+        .select('email')
+        .eq('email',userEmail)
+        if (error) {
+          console.log("Error en consultar los correos en la tabla de usuarios")
           
-          const {data,error} = await supabase
-          .from('usuarios')
-          .select('email')
-          .eq('email',userEmail)
-          if (error) {
-            console.log("Error en consultar los correos en la tabla de usuarios")
-            
-          } else if(data.length > 0) {
-            console.log("El correo ya existe en la tabla de usuarios ", data)
-          } else {
-            console.log("EL correo no esta ", data)
-            
-            const { error: insertError } = await supabase
-            .from('usuarios')
-            .insert([{ 
-              email: userEmail,
-              role: userRole
-            
-            }]); 
-            if (insertError) {
-              console.error("Error al insertar el usuario:", insertError.message);
-            } else {
-              console.log("Nuevo usuario insertado correctamente en la tabla 'usuarios'.");
-            }
+        } else if(data.length > 0) {
+          console.log("El correo ya existe en la tabla de usuarios ", data)
 
+        } else {
+          console.log("EL correo no esta ", data)
+          
+          const { error: insertError } = await supabase
+          .from('usuarios')
+          .insert([{ 
+            email: userEmail,
+            role: userRole
+          
+          }]); 
+
+          if (insertError) {
+            console.error("Error al insertar el usuario:", insertError.message);
+
+          } else {
+            console.log("Nuevo usuario insertado correctamente en la tabla 'usuarios'.");
 
           }
-
-
         }
-
-        
-        setUser({
-          id: session.user.id,
-          email: session.user.email,
-          avatar: session.user.user_metadata.avatar_url,
-          name: userName,
-          role: userRole
-        });
       }
 
+      setUser({
+        id: userId['id'],
+        email: session.user.email,
+        avatar: session.user.user_metadata.avatar_url,
+        name: userName,
+        role: userRole
+      });
+    }
 
-    };
 
-    const { data: authListener } = supabase.auth.onAuthStateChange( async (event, session) => {
+  };
+
+  useEffect(() => {
+
+  
+    const { data: authListener } = supabase.auth.onAuthStateChange( (event, session) => {
       if (session) {
 
-       
+        console.log("Session lista")
 
-        setUser({
-          id: session.user.id,
-          email: session.user.email,
-          avatar: session.user.user_metadata.avatar_url,
-          name: session.user.user_metadata.name,
-    
-        });
+        checkUserSession()
       } else {
+
+        console.log("Session no lista")
         setUser(null);
       }
     });
 
-    checkUserSession();
-
+    
     return () => {
       authListener.subscription.unsubscribe();
     };
