@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import '../styles/NavBar.css';
 
 export default function NavBar() {
   const { loginWithGoogle, user, logout } = useContext(AuthContext);

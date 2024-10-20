@@ -6,6 +6,7 @@ import Formulary from "./pages/FormularyPage";
 import HomePage from "./pages/HomePage";
 import LoginGenerico from "./pages/LoginGenerico";
 import ReclamoForm from "./pages/ReclamoForm";
+import './styles/index.css';
 
 export default function App() { 
   return ( 
