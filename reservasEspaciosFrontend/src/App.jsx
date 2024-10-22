@@ -6,7 +6,7 @@ import Formulary from "./pages/FormularyPage";
 import AuthProvider from "./context/AuthContext";
 import About from "./pages/AboutPage";
 import LoginGenerico from "./pages/LoginGenerico";
-
+import PaginaAdmi from "./pages/PaginaAdmi";
 
 export default function App() {
     return (
@@ -24,6 +24,7 @@ export default function App() {
 
                     <Route path="/login-generico" element={<LoginGenerico />} />
 
+                    <Route path="/pagina-admi" element={<PaginaAdmi />} />
                 </Routes>
             </Router>
         </AuthProvider>
