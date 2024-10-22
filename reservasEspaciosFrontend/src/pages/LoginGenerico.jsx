@@ -24,9 +24,14 @@ export default function LoginGenerico() {
     const response = await loginGeneric(email, password);
     
     if (response) {
-      navigate('/'); 
+      // Verificar si el correo termina en .admi.com
+      if (email.endsWith('admi.com')) {
+        navigate('/pagina-admi');  // Redirige a la página del administrador
+      } else {
+        navigate('/');  // Redirige a la página principal
+      }
     } else {
-      alert("Error en el inicio de sesión, "); 
+      alert("Error en el inicio de sesión");
     }
   };
 
