@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000; // Usar el puerto desde .env si está dis
 
 // Importar rutas y base de datos
 import supabase from './db.js'; // Ajusta la exportación en db.js si es necesario
-import authRoutes from './routes/auth.routes.js';
+//import authRoutes from './routes/auth.routes.js';
 import apiRoutes from './routes/api.routes.js';
 
 // Middleware
@@ -21,7 +21,7 @@ app.use(express.json()); // Parsear JSON
 
 // Rutas
 app.use('/api', apiRoutes); // Rutas para la API
-app.use('/auth', authRoutes); // Rutas de autenticación
+//app.use('/auth', authRoutes); // Rutas de autenticación
 
 // Ruta raíz
 app.get('/', (req, res) => {

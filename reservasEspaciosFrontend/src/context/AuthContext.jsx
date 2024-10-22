@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { supabase } from "../supabase/client";
-import { getUserId } from '../api/auth';
+
 import bcrypt from "bcryptjs";
 
 export const AuthContext = createContext({
@@ -27,78 +27,76 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const fetchUserId = async (email) => {
+    const { data, error } = await supabase
+      .from("usuarios")
+      .select("id")
+      .eq("email", email)
+      .single(); // Trae un único registro
+
+    if (error) {
+      console.error("Error al obtener el ID del usuario:", error.message);
+      return null;
+    }
+    return data?.id;
+  };
+
+
 
   const checkUserSession = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (session) {
-      const provider = session.user.app_metadata.providers[0]
-      const userEmail = session.user.email
-      const userRole = getRoleByEmail(userEmail.split('@')[1])
-      const userName = userEmail.split('@')[0]
-
-
-      console.log("Provedor de login ", provider)
-      console.log("Email ", userEmail)
-      console.log("Role ", userRole)
-
-      const userId = await getUserId(userEmail);
-
-
-
-
-      if (provider === "google") {
-        
-        const {data,error} = await supabase
-        .from('usuarios')
-        .select('email')
-        .eq('email',userEmail)
-        if (error) {
-          console.log("Error en consultar los correos en la tabla de usuarios")
-          
-        } else if(data.length > 0) {
-          console.log("El correo ya existe en la tabla de usuarios ", data)
-
-        } else {
-          console.log("EL correo no esta ", data)
-          
-          const { error: insertError } = await supabase
-          .from('usuarios')
-          .insert([{ 
-            email: userEmail,
-            role: userRole
-          
-          }]); 
-
-          if (insertError) {
-            console.error("Error al insertar el usuario:", insertError.message);
-
-          } else {
-            console.log("Nuevo usuario insertado correctamente en la tabla 'usuarios'.");
-
-          }
-        }
-      }
-
-      setUser({
-        id: userId['id'],
-        email: session.user.email,
-        avatar: session.user.user_metadata.avatar_url,
-        name: userName,
-        role: userRole
-      });
+    const { data: { session }, error } = await supabase.auth.getSession();
+  
+    if (error) {
+      return;
     }
+  
+    if (session) {
+      const { user } = session;
+      const userEmail = user.email;
+      const userRole = getRoleByEmail(userEmail);
+      const userName = userEmail.split("@")[0];
+  
 
-
+      let userID = await fetchUserId(userEmail);
+  
+      // Si el usuario no está registrado, lo creamos
+      if (!userID) {
+        const { data, error: insertError } = await supabase
+          .from("usuarios")
+          .insert([{ email: userEmail, role: userRole }])
+          .select("id")
+          .single();
+  
+        if (insertError) {
+          console.error("Error al insertar el usuario:", insertError.message);
+          return;
+        }
+        userID = data.id;
+        console.log("Usuario insertado con ID:", userID);
+      }
+  
+      // Guardamos el usuario en el estado global
+      setUser({
+        id: userID,
+        email: userEmail,
+        avatar: user.user_metadata?.avatar_url,
+        name: userName,
+        role: userRole,
+      });
+    } else {
+      console.log("No hay sesión activa");
+      setUser(null);
+    }
   };
 
   useEffect(() => {
 
+
+
   
-    const { data: authListener } = supabase.auth.onAuthStateChange( (event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange( async (event, session) => {
       if (session) {
 
-        console.log("Session lista")
 
         checkUserSession()
       } else {
