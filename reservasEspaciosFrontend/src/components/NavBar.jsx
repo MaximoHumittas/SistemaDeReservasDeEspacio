@@ -1,6 +1,7 @@
-import { NavLink } from "react-router-dom";
 import { useContext } from "react";
+import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import '../styles/NavBar.css';
 
 export default function NavBar() {
   const { loginWithGoogle, user, logout } = useContext(AuthContext);
@@ -18,6 +19,9 @@ export default function NavBar() {
             </li>
             <li>
               <NavLink to="/about">About</NavLink>
+            </li>
+            <li>
+              <NavLink to="/reclamo">Reclamo</NavLink>
             </li>
           </>
         )}
