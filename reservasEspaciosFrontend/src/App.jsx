@@ -8,6 +8,7 @@ import About from "./pages/AboutPage";
 import LoginGenerico from "./pages/LoginGenerico";
 import ReclamoForm from "./pages/ReclamoForm";
 import './styles/index.css';
+import Profile from "./pages/Profile";
 
 export default function App() {
     return (
@@ -27,6 +28,8 @@ export default function App() {
 
                     <Route path="/reclamo" element={<ReclamoForm />} />
 
+                    
+                    <Route path="/profile" element={<Profile />} />
                 </Routes>
             </Router>
         </AuthProvider>

@@ -31,6 +31,9 @@ export default function NavBar() {
               <span>{user.name}</span>
               <img src={user.avatar} alt="User Avatar" />
               <button onClick={logout}>Salir</button>
+              <li>
+              <NavLink to="/Profile">Perfil</NavLink>
+            </li>
             </>
           ) : (
             <>
