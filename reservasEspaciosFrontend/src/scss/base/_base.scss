@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+:root {
+    --blue: #001839;
+    --white: #ffffff;
+    --yellow: #a67800;
+    --celeste: #4489ff;
+    --grey: #cdcdcd;
+    --black: #000000;
+
+    --ojo: #0001890
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+.app-container {
+    background-color: var(--grey);
+    min-height: 100vh;
+}

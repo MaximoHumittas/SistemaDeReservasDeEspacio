@@ -28,6 +28,7 @@
     "react-hook-form": "^7.53.0",
     "react-router-dom": "^6.26.1",
     "reservasespaciosfrontend": "file:",
+    "sass": "^1.80.3",
     "typescript": "^5.5.4"
   },
   "devDependencies": {
